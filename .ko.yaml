@@ -1,0 +1,4 @@
+builds:
+  - id: ko-demo-app
+    dir: .
+    main: ./cmd
