@@ -25,10 +25,12 @@ jobs:
 
     - name: Check out Demo App
       uses: actions/checkout@v3
+      with:
+        path: './demo-app'
 
     - name: Setup Lima k3s cluster Cluster
       run: |
-        lima start --name="$LIMA_INSTANCE" --tty=false ./ko-k3s-demos.yaml
+        limactl start --name="$LIMA_INSTANCE" --tty=false ./ko-k3s-demos.yaml
         mkdir -p "$HOME/.lima/$LIMA_INSTANCE/conf"
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         limactl shell k3s sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
@@ -47,6 +49,7 @@ jobs:
     
     - name: Install ko
       run: go install ./ko
+      working-directory: ko
 
     - name: Run Smoke Test
       run: |
@@ -60,4 +63,5 @@ jobs:
         # ko apply --platform=all -f ./test
         # kubectl wait --timeout=60s --for=condition=Ready pod/kodata
         # kubectl delete pod kodata
+      working-directory: demo-app
         
