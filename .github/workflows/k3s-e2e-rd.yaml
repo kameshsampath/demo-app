@@ -34,6 +34,8 @@ jobs:
         mkdir -p "$HOME/.lima/$LIMA_INSTANCE/conf"
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         limactl shell "$LIMA_INSTANCE" sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
+        echo "$KUBECONFIG"
+        cat "$KUBECONFIG"
       working-directory: demo-app
         
     - name: Install Kubectl
@@ -52,7 +54,7 @@ jobs:
 
     - name: Run Smoke Test
       run: |
-        export KUBECONFIG="$HOME/.lima/k3s/conf/kubeconfig.yaml"
+        export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         # Test with k3s load
         KO_DOCKER_REPO=k3s.local ko apply --platform=all -f ./configs
         kubectl wait --timeout=30s --for=condition=Ready deploy/myapp
