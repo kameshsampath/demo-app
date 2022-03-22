@@ -46,9 +46,12 @@ jobs:
         ref: 'ko-k3s'
         path: './ko'
     
+    - name: Check if k3s server is reachable
+      run: |
+        kubectl get pods
+
     - name: Install ko
-      run: go install .
-      working-directory: ko
+      run: go install ./ko
 
     - name: Run Smoke Test
       run: |
