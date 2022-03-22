@@ -26,7 +26,7 @@ jobs:
     - name: Check out Demo App
       uses: actions/checkout@v3
       with:
-        path: './demo-app'
+        path: './ko-demo-app'
 
     - name: Setup Lima k3s cluster Cluster
       run: |
@@ -34,7 +34,7 @@ jobs:
         mkdir -p "$HOME/.lima/$LIMA_INSTANCE/conf"
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         limactl shell "$LIMA_INSTANCE" sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
-      working-directory: demo-app
+      working-directory: ko-demo-app
         
     - name: Install Kubectl
       uses: azure/setup-kubectl@v2.0
@@ -47,13 +47,14 @@ jobs:
         path: './ko'
     
     - name: Build ko
-      run: go build .
+      run: go install .
       working-directory: ko
 
     - name: Run Smoke Test
       run: |
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         # Test with k3s load
-        KO_DOCKER_REPO=k3s.local ./ko/ko apply --platform=all -f ./demo-app/configs
+        KO_DOCKER_REPO=k3s.local "$GITHUB_WORKSPACE/ko/ko" apply --platform=all -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
+      working-directory: ko-demo-app
         

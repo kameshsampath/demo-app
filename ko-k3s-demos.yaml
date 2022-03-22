@@ -37,7 +37,7 @@ containerd:
 
 # CPUs: if you see performance issues, try limiting cpus to 1.
 # 🟢 Builtin default: 4
-# cpus: 4
+cpus: 1
 
 # Memory size
 # 🟢 Builtin default: "4GiB"
