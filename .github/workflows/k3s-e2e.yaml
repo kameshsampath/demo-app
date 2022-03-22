@@ -29,11 +29,13 @@ jobs:
         path: './ko-demo-app'
 
     - name: Setup Lima k3s cluster Cluster
+      id: lima_vm
       run: |
         limactl start --tty=false ./ko-k3s-demos.yaml
         mkdir -p "$HOME/.lima/$LIMA_INSTANCE/conf"
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         limactl shell "$LIMA_INSTANCE" sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
+        echo "::set-output name=kubeconfig::$KUBECONFIG"
       working-directory: ko-demo-app
         
     - name: Install Kubectl
@@ -49,15 +51,19 @@ jobs:
     - name: Check if k3s server is reachable
       run: |
         kubectl get pods
+      env:
+        KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
 
     - name: Install ko
       run: go install ./ko
 
     - name: Run Smoke Test
       run: |
-        export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         # Test with k3s load
-        KO_DOCKER_REPO=k3s.local ko apply --platform=all -f ./configs
+        ko apply --platform=all -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
+      env:
+        KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
+        KO_DOCKER_REPO: k3s.local
       working-directory: ko-demo-app
         
