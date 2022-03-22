@@ -4,9 +4,11 @@ Demo application to show using ko with k3s. The demo application leverages [nerd
 
 ## Start k3s cluster
 
-We can use [Rancher Desktop](https://rancherdesktop.io/) or spin k3s using [lima](https://github.com/lima-vm/lima) as shown below,
+We can use [Rancher Desktop](https://rancherdesktop.io/) 
 
 (OR)
+
+Spin k3s using [lima](https://github.com/lima-vm/lima),
 
 ```shell
 limactl start --tty=false $PWD/ko-k3s-demos.yaml
