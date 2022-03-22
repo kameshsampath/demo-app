@@ -48,14 +48,15 @@ jobs:
         ref: 'ko-k3s'
         path: './ko'
     
-    - name: Check if k3s server is reachable
+    - name: Sanity check to see if kubernetes cluster is reachable
       run: |
-        kubectl get pods
+        kubectl get pods -A
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
 
     - name: Install ko
-      run: go install ./ko
+      run: go install .
+      working-directory: ko
 
     - name: Run Smoke Test
       run: |
