@@ -50,7 +50,7 @@ jobs:
     
     - name: Sanity check to see if kubernetes cluster is reachable
       run: |
-        kubectl get pods -A
+        kubectl get pods
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
 
