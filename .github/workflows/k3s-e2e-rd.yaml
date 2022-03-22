@@ -57,6 +57,6 @@ jobs:
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         # Test with k3s load
         KO_DOCKER_REPO=k3s.local ko apply --platform=all -f ./configs
-        kubectl wait --timeout=30s --for=condition=Ready deploy/myapp
+        kubectl rollout status deploy/myapp --timeout 30s
       working-directory: demo-app
         
