@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-11
 
     env:
-     LIMA_INSTANCE: "k3s"
+     LIMA_INSTANCE: "ko-k3s-demos"
      KO_DOCKER_REPO: "k3s.local"
      
     steps:
@@ -30,7 +30,7 @@ jobs:
 
     - name: Setup Lima k3s cluster Cluster
       run: |
-        limactl start --name="$LIMA_INSTANCE" --tty=false ./ko-k3s-demos.yaml
+        limactl start --tty=false ./ko-k3s-demos.yaml
         mkdir -p "$HOME/.lima/$LIMA_INSTANCE/conf"
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         limactl shell k3s sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
