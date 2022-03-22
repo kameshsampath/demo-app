@@ -46,7 +46,7 @@ jobs:
         ref: 'ko-k3s'
         path: './ko'
     
-    - name: Build ko
+    - name: Install ko
       run: go install .
       working-directory: ko
 
@@ -54,7 +54,7 @@ jobs:
       run: |
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         # Test with k3s load
-        KO_DOCKER_REPO=k3s.local "$GITHUB_WORKSPACE/ko/ko" apply --platform=all -f ./configs
+        KO_DOCKER_REPO=k3s.local ko apply --platform=all -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
       working-directory: ko-demo-app
         
