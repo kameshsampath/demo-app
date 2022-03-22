@@ -18,11 +18,13 @@ jobs:
     - name: Install test dependencies
       run: brew install qemu bash coreutils lima
 
-    - uses: actions/setup-go@v2
+    - name: Install go v1.17.x
+      uses: actions/setup-go@v2
       with:
         go-version: 1.17.x
 
-    - uses: actions/checkout@v3
+    - name: Check out Demo App
+      uses: actions/checkout@v3
 
     - name: Setup Lima k3s cluster Cluster
       run: |
@@ -31,10 +33,10 @@ jobs:
         export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
         limactl shell k3s sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
         
-    - uses: azure/setup-kubectl@v2.0
+    - name: Install Kubectl
+      uses: azure/setup-kubectl@v2.0
       # with:
       #  version: '<version>' # default is latest stable
-      id: Install kubectl
 
     - name: Checkout ko WIP
       uses: actions/checkout@v3
