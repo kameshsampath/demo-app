@@ -1,0 +1,61 @@
+name: K3s e2e tests Lima Desktop
+
+on:
+  workflow_dispatch:  # Allow manual runs.
+  pull_request:
+    branches: ['main']
+
+jobs:
+  e2e-tests:
+    name: e2e tests
+    runs-on: macos-11
+
+    env:
+     LIMA_INSTANCE: "k3s"
+     KO_DOCKER_REPO: "k3s.local"
+     
+    steps:
+    - name: Install test dependencies
+      run: brew install qemu bash coreutils lima
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: 1.17.x
+
+    - uses: actions/checkout@v3
+
+    - name: Setup Lima k3s cluster Cluster
+      run: |
+        lima start --name="$LIMA_INSTANCE" --tty=false ./ko-k3s-demos.yaml
+        mkdir -p "$HOME/.lima/$LIMA_INSTANCE/conf"
+        export KUBECONFIG="$HOME/.lima/$LIMA_INSTANCE/conf/kubeconfig.yaml"
+        limactl shell k3s sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
+        
+    - uses: azure/setup-kubectl@v2.0
+      # with:
+      #  version: '<version>' # default is latest stable
+      id: Install kubectl
+
+    - name: Checkout ko WIP
+      uses: actions/checkout@v3
+      with:
+        repository: github.com/kameshsampath/ko
+        ref: 'ko-k3s'
+        path: './ko'
+    
+    - name: Install ko
+      run: go install ./ko
+
+    - name: Run Smoke Test
+      run: |
+        export KUBECONFIG="$HOME/.lima/k3s/conf/kubeconfig.yaml"
+
+        # Test with k3s load
+        KO_DOCKER_REPO=k3s.local ko apply --platform=all -f ./configs
+        kubectl wait --timeout=30s --for=condition=Ready deploy/myapp
+
+        # Test with registry
+        # ko apply --platform=all -f ./test
+        # kubectl wait --timeout=60s --for=condition=Ready pod/kodata
+        # kubectl delete pod kodata
+        
