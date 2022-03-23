@@ -1,4 +1,4 @@
 builds:
   - id: ko-demo-app
-    dir: .
-    main: ./cmd
+    dir: ./cmd
+    main: pingpong

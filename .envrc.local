@@ -1,1 +1,2 @@
-# export LIMA_INSTANCE=ko-k3s-demos
+export KO_DOCKER_REPO=ttl.sh
+export LIMA_INSTANCE=k3s
