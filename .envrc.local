@@ -1,2 +1,0 @@
-export KO_DOCKER_REPO=ttl.sh
-export LIMA_INSTANCE=k3s
