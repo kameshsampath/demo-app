@@ -41,6 +41,12 @@ jobs:
     - name: Install Kubectl
       uses: azure/setup-kubectl@v2.0
 
+    - name: Sanity check to see if kubernetes cluster is reachable
+      run: |
+        kubectl get pods -A
+      env:
+        KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
+
     - name: Checkout ko WIP
       uses: actions/checkout@v3
       with:
@@ -48,12 +54,6 @@ jobs:
         ref: 'ko-k3s'
         path: './ko'
     
-    - name: Sanity check to see if kubernetes cluster is reachable
-      run: |
-        kubectl get pods
-      env:
-        KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
-
     - name: Install ko
       run: go install .
       working-directory: ko
