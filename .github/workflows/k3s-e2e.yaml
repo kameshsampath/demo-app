@@ -60,7 +60,6 @@ jobs:
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
 
-
     - name: Checkout ko WIP
       uses: actions/checkout@v3
       with:
@@ -75,7 +74,6 @@ jobs:
     - name: Run Smoke Test
       run: |
         set -x 
-        kubectl get pods -A
         ko version
         KO_DOCKER_REPO=k3s.local ko apply -v -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
