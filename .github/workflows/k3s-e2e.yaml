@@ -16,7 +16,10 @@ jobs:
      
     steps:
     - name: Install test dependencies
-      run: brew install qemu bash coreutils lima
+      run: |
+       brew update
+       brew install qemu bash coreutils lima
+       brew upgrade
 
     - name: Install go v1.17.x
       uses: actions/setup-go@v2
@@ -28,6 +31,12 @@ jobs:
       with:
         path: './ko-demo-app'
 
+    - name: Cache ~/Library/Caches/lima/download
+      uses: actions/cache@v2
+      with:
+        path: ~/Library/Caches/lima/download
+        key: ${{ runner.os }}-integration
+        
     - name: Setup Lima k3s cluster Cluster
       id: lima_vm
       run: |
@@ -61,7 +70,7 @@ jobs:
     - name: Run Smoke Test
       run: |
         # Test with k3s load
-        ko apply --platform=all -f ./configs
+        ko apply -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
