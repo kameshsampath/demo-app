@@ -18,7 +18,7 @@ jobs:
     - name: Install test dependencies
       run: |
        brew update
-       brew install qemu bash coreutils lima
+       brew install qemu bash coreutils lima jq
        brew upgrade
 
     - name: Install go v1.17.x
@@ -53,11 +53,13 @@ jobs:
     - name: Sanity check to see if kubernetes cluster is reachable
       uses: nick-invision/retry@v2
       with:
-        timeout_minutes: 30
-        max_attempts: 5
-        command: kubectl get pods -A
+        timeout_minutes: 5 
+        retry_wait_seconds: 30
+        max_attempts: 10
+        command: ./ko-demo-app/hack/check.sh
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
+
 
     - name: Checkout ko WIP
       uses: actions/checkout@v3
