@@ -74,8 +74,8 @@ jobs:
 
     - name: Run Smoke Test
       run: |
-        # Test with k3s load
-        ko apply -f ./configs
+        ko version
+        ko apply -v -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
