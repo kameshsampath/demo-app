@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 kubectl cluster-info
 printf "\n"
 
