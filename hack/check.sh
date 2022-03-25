@@ -6,11 +6,14 @@ printf "\n"
 kubectl get namespaces
 printf "\n"
 
+kubectl get pods -n kube-system
+printf "\n"
+
 items=$(kubectl get pods -n kube-system -o json | jq -r '.items | length')
 
-printf "\n number of pods in kube-system is '%s' " "$items"
+printf "\n number of pods in kube-system is '%s' \n" "$items"
 
-if [[ items -ge 7 ]] ;
+if [[ $items -ge 7 ]] ;
 then
  exit 0
 else

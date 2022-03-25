@@ -17,7 +17,6 @@ jobs:
     steps:
     - name: Install test dependencies
       run: |
-       set -x
        brew update
        brew install qemu bash coreutils lima jq
        brew upgrade
@@ -60,9 +59,9 @@ jobs:
     - name: Sanity check to see if kubernetes cluster is reachable
       uses: nick-invision/retry@v2
       with:
-        timeout_minutes: 5 
+        timeout_minutes: 10
         retry_wait_seconds: 30
-        max_attempts: 10
+        max_attempts: 20
         command: ./ko-demo-app/hack/check.sh
       env:
         KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
