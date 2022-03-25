@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
+set -x
+
+kubectl cluster-info
+printf "\n"
+
+kubectl get namespaces
+printf "\n"
+
 items=$(kubectl get pods -n kube-system -o json | jq -r '.items | length')
 
-echo "number of pods in kube-system is '$items'"
+printf "\n number of pods in kube-system is '%s' " "$items"
 
 if [[ items -ge 7 ]] ;
 then

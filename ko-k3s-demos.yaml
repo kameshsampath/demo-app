@@ -67,6 +67,12 @@ probes:
     Run "limactl shell k3s sudo journalctl -u k3s" to check the log.
     If that is still empty, check the bottom of the log at "/var/log/cloud-init-output.log".
 
+portForwards:
+  - guestIP: 0.0.0.0
+    guestPort: 6433
+    hostIP: 0.0.0.0
+    hostPort: 6433
+
 message: |
   To run `kubectl` on the host (assumes kubectl is installed):
   ----
@@ -74,9 +80,3 @@ message: |
   $ export KUBECONFIG="{{.Dir}}/conf/kubeconfig.yaml"
   $ limactl shell {{.Name}} sudo cat /etc/rancher/k3s/k3s.yaml >$KUBECONFIG
   $ kubectl ...
-  ----
-  To run `buildkit` on the host (assumes buildctl is installed), run the following commands:
-  -------
-  export BUILDKIT_HOST="unix://{{.Dir}}/sock/buildkitd.sock"
-  buildctl debug workers
-  -------
