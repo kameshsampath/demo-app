@@ -74,11 +74,12 @@ jobs:
 
     - name: Run Smoke Test
       run: |
+        set -x 
+        kubectl get pods -A
         ko version
-        ko apply -v -f ./configs
+        KO_DOCKER_REPO=k3s.local ko apply -v -f ./configs
         kubectl rollout status deploy/myapp --timeout 30s
       env:
-        KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"
-        KO_DOCKER_REPO: k3s.local
+        KUBECONFIG: "${{ steps.lima_vm.outputs.kubeconfig }}"        
       working-directory: ko-demo-app
         
